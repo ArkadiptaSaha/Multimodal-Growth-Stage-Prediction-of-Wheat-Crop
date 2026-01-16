@@ -124,6 +124,3 @@ Contributions are welcome!
 
 ---
 
-
-## 📁 Suggested Repository Structure
-
