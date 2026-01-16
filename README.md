@@ -1,121 +1,129 @@
-# YouTube Chatbot using LangChain (Google Colab)
+# Multimodal Growth Stage Prediction of Wheat Crop (Google Colab)
 
-This repository contains a **Google Colab notebook** that demonstrates how to build an **AI chatbot** capable of understanding and answering questions about YouTube video content using **LangChain**, large language models, and retrieval techniques.
+This repository contains a **Google Colab notebook** that implements a **multimodal time-series deep learning model** for predicting the growth stages of wheat crops using image, text, and numerical data over time.
 
-📘 Open your Colab notebook here:  
+📘 Open the Colab notebook here:  
 https://colab.research.google.com/drive/1Sz9fYFG8nnG7MsXxovxpSIPWamHUzYhB
 
 ---
 
-## 🧠 Project Overview
+## 📌 Project Overview
 
-With the rise of large language models (LLMs), it is now possible to build intelligent chatbots that can interact with users in natural language. This project specifically focuses on creating a **YouTube-aware chatbot** which can:
+Accurate prediction of crop growth stages is crucial for precision agriculture, irrigation planning, fertilization scheduling, and yield estimation. Traditional approaches rely on manual observation or single-modality data, which can be noisy or incomplete.
 
-- Fetch or process video transcripts  
-- Convert text into vector embeddings  
-- Use a retrieval system to find relevant context  
-- Generate answers using an LLM based on retrieved content  
+This project presents a **multimodal time-series framework** that integrates:
+- **Visual data** (crop images),
+- **Text embeddings** (metadata/descriptions), and  
+- **Numerical agronomic features**  
 
-The project uses the **LangChain** framework, which simplifies connecting LLMs to external data sources and building complex AI workflows.
-
----
-
-## 🚀 Key Features
-
-- 📺 **YouTube Transcript Loading** – Extracts captions/subtitles from a video  
-- 🧩 **Vector Embeddings** – Converts text into numerical vectors for semantic search  
-- 🔍 **Document Retrieval** – Finds the most relevant parts of the transcript  
-- 🤖 **LLM Generation** – Produces answers grounded in video content  
-- 💬 **Interactive Q&A chatbot** inside Google Colab  
+to predict the wheat crop’s growth stage at each time step.
 
 ---
 
+## 🎯 Project Objective
 
-> You can export your Colab notebook and place it inside the `notebooks/` folder for clarity.
+The main goal of this project is to **predict the wheat crop growth stage (4-class classification)** by learning both spatial and temporal patterns from multimodal data.
+
+---
+
+## 🚀 Key Contributions
+
+- Built a **multimodal model** using:
+  - **Vision Transformer (ViT) – Google Patch-224 model** for image embeddings  
+  - **OpenAI’s CLIP** for text embeddings  
+  - Numerical feature embeddings for structured data  
+
+- Designed a **time-series prediction pipeline** using a sliding window approach:
+  - Used embeddings from the **previous 5 time steps** to predict the **6th time step**.
+
+- **Fine-tuned Stable Diffusion XL with LoRA** to generate **missing crop images**, ensuring data completeness and consistency.
+
+- Trained an **LSTM-based temporal model**, as it performed better than:
+  - Time Series Transformer  
+  - Informer  
+  - Bahdanau Attention mechanism  
+  - Luong Attention mechanism  
+
+- Achieved **83% prediction accuracy** on the **4-class crop growth stage classification task** using the full multimodal dataset.
+
+---
+
+## 🧠 Model Architecture
+
+### 1️⃣ Feature Extraction
+- **ViT (Google patch-224)** → Extracts deep visual embeddings from crop images  
+- **CLIP embeddings** → Extracts semantic features from text  
+- **Numerical embeddings** → Encodes structured agronomic variables  
+
+These embeddings are concatenated to form a unified multimodal representation.
+
+### 2️⃣ Time-Series Modeling
+- A **sliding window of 6 time steps** is used:
+  - First **5 steps → input**
+  - 6th step → prediction target  
+
+- A **Long Short-Term Memory (LSTM) network** is used to capture temporal dependencies, as it outperformed transformer-based models and attention mechanisms in this dataset.
+
+### 3️⃣ Handling Missing Images
+- Missing images were generated using a **LoRA fine-tuned Stable Diffusion XL model**, conditioned on structured prompts derived from numerical and textual features.
+
+---
+
 
 ---
 
 ## 🛠 Technologies Used
 
-| Technology        | Purpose |
-|------------------|---------|
-| LangChain        | AI workflow orchestration |
-| LLM (OpenAI / other) | Generates contextual responses |
-| Embeddings       | Converts text to searchable vectors |
-| Google Colab     | Development environment |
-| Python           | Core programming language |
+| Component | Technology |
+|------------|------------|
+| Programming | Python |
+| Environment | Google Colab |
+| Image Encoder | Vision Transformer (ViT) – Google patch-224 |
+| Text Encoder | OpenAI CLIP |
+| Generative Model | Stable Diffusion XL + LoRA |
+| Time-Series Model | LSTM |
+| Libraries | PyTorch, NumPy, Pandas, Matplotlib |
 
 ---
 
-## 📚 How It Works (in brief)
+## 📌 How to Run
 
-1. **Load YouTube Transcript**  
-   The notebook fetches captions or transcript from a YouTube URL.
+### Option 1 — Run in Google Colab (Recommended)
+1. Open the notebook in Colab  
+2. Mount Google Drive  
+3. Install required libraries  
+4. Run all cells sequentially  
+5. Check training metrics and predictions  
 
-2. **Text Splitting & Embeddings**  
-   The transcript is split into smaller chunks and converted into embeddings.
+### Option 2 — Download and Run Locally
+1. Click the notebook link  
+2. Go to **File → Download → Download .ipynb**  
+3. Open in Jupyter Notebook / VS Code  
+4. Install dependencies and run all cells  
 
-3. **Vector Store / Retriever**  
-   These embeddings are stored so the chatbot can retrieve relevant context.
-
-4. **Query Processing**  
-   The user asks a question, and the system retrieves related transcript sections.
-
-5. **Answer Generation**  
-   The LLM generates a response based on retrieved content.
-
----
-
-## 📌 How to Use (Important)
-
-### **Option 1 — Run directly in Google Colab (Recommended)**
-1. Open the notebook in Google Colab  
-2. Install required libraries (`pip install langchain ...`)  
-3. Add your API key (if required)  
-4. Provide a YouTube video URL  
-5. Run all cells in order  
-6. Ask questions about the video  
-
-### **Option 2 — Download and run locally**
-If you want to run this notebook on your own system:
-
-1. Click on the notebook link above  
-2. Click **File → Download → Download .ipynb**  
-3. Alternatively, from GitHub, click **Raw**, then save the file  
-4. Open the downloaded `.ipynb` file in **Jupyter Notebook or VS Code**  
-5. Install dependencies and run the cells in sequence  
-
-> **Note:** If GitHub fails to render the notebook, always download the **Raw `.ipynb` file** and open it locally.
+> **Note:** If GitHub does not render the notebook correctly, always download the **Raw .ipynb file** and open it locally.
 
 ---
 
-## 📌 Example Use Case
+## 📊 Results
 
-If the video is about **Machine Learning**, you can ask:
-
-- “Explain this video in simple terms.”
-- “What are the key points?”
-- “Summarize the video in 5 lines.”
-
-The chatbot will answer based on the video content.
+- **Accuracy:** 83% on 4-class growth stage classification  
+- **Temporal modeling:** LSTM outperformed transformer-based approaches  
+- **Robustness:** Missing image generation improved multimodal consistency  
 
 ---
 
-## 📬 Contact / Feedback
+## 📬 Contact
 
 If you have questions or want to collaborate:
 
-- **Email:** your.email@example.com  
-- **GitHub:** https://github.com/your-username  
+- **Email:** arkadiptasaha04@gmail.com  
+- **GitHub:** https://github.com/ArkadiptaSaha  
 
-Contributions and improvements are welcome!
+Contributions are welcome!
 
 ---
 
-## 📑 License
 
-This project is released under the **MIT License** (or replace with your preferred license).
-
-
-## 📁 Recommended Repository Structure
+## 📁 Suggested Repository Structure
 
